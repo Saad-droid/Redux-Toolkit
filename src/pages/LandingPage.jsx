@@ -8,7 +8,7 @@ const LandingPage = () => {
   return (
     <div>
       this is landing page
-     
+     { isAuthenticated? null: <button onClick={() => loginWithRedirect()}>Log In</button>}
     </div>
   )
 }
