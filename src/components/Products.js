@@ -1,15 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { add } from '../store/cartSlice';
+import { remove } from '../store/cartSlice';
 import { useDispatch } from 'react-redux';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import SkeletonList from './SkeletonList';
+
+const ProductButtons = ({ product, quantity, onAdd, onRemove }) => (
+    <div>
+        {quantity > 0 ? (
+            <>
+                <button onClick={() => onRemove(product)} className='btn'>
+                    -
+                </button>
+                <span>{quantity}</span>
+                <button onClick={() => onAdd(product)} className='btn'>
+                    +
+                </button>
+            </>
+        ) : (
+            <button onClick={() => onAdd(product)} className='btn'>
+                Add to cart
+            </button>
+        )}
+    </div>
+);
 export default function Products() {
     const [products, setProducts] = useState([]);
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false);
     const [index, setIndex] = useState(null)
     const [modal, setModal] = useState(false)
+    const [selectedQuantities, setSelectedQuantities] = useState({});
     useEffect(() => {
         const fetchproducts = async () => {
             setLoading(true);
@@ -24,9 +46,24 @@ export default function Products() {
         }
         fetchproducts()
     }, [])
+    const handleRemove = (p) => {
+        // Dispatch a remove action if quantity is greater than 0
+        if (selectedQuantities[p.id] > 0) {
+            dispatch(remove(p.id));
+            setSelectedQuantities({
+                ...selectedQuantities,
+                [p.id]: selectedQuantities[p.id] - 1,
+            });
+        }
+    };
     const handleAdd = (p) => {
-        dispatch(add(p))
-    }
+        dispatch(add(p));
+        setSelectedQuantities({
+            ...selectedQuantities,
+            [p.id]: (selectedQuantities[p.id] || 0) + 1,
+        });
+    };
+
     // if (loading) {
     //     return (
     //         {loading ? <SkeletonList /> : <DataList data={data} />}
@@ -41,42 +78,43 @@ export default function Products() {
 
 
         <div className='productsWrapper'>
-
             {loading ? (
-                // Display the skeleton loader using react-loading-skeleton
                 <SkeletonList products={20} />
             ) : (
-
                 products.map((p, index) => (
-                    <div className='card' key={p.id}>
-                        <img src={p.image || <Skeleton />} alt=""></img>
+                    <div className='card' key={p.id}> 
+                        <img src={p.image || <Skeleton />} onClick={()=>handleModal(index)} alt=""></img>
                         <h4>{p.title}</h4>
                         <h5> Rs {p.price}</h5>
-                        <button onClick={() => handleAdd(p)} className='btn'>Add to cart</button>
-                        <br/>
-                        <button className='btn' onClick={() => handleModal(index)} > Details</button>
+                        <ProductButtons
+                            product={p}
+                            quantity={selectedQuantities[p.id] || 0}
+                            onAdd={handleAdd}
+                            onRemove={handleRemove}
+                        />
+                        <br />
+                       
                     </div>
-
                 ))
             )}
-                   {modal && 
-                   <div className='modal-container'>
+            {modal && (
+                <div className='modal-container'>
                     <div className='modal-content'>
-
-                        {products.filter((item,indexvalue)=>indexvalue===index).map((d)=>{
-                            return <div>
-                            
-                            <h3>{d.title}</h3>
-                            <h3>{d.description}</h3>
-                            <h3>Rating : {d.rating.rate} by {d.rating.count} people  </h3>
-                          
+                        {products[index] && (
+                            <div>
+                                <h3 >{products[index].title}</h3>
+                                <h3 className='titl'>{products[index].description}</h3>
+                                <h3>
+                                    Rating: {products[index].rating.rate} by {products[index].rating.count} people
+                                </h3>
                             </div>
-                        })}
-                        <button className='modal-close'  onClick={handleModal}>X</button>
-                        </div>
+                        )}
+                        <button className='modal-close' onClick={() => setModal(false)}>
+                            X
+                        </button>
                     </div>
-                    }
-
+                </div>
+            )}
         </div>
-    )
+    );
 }
