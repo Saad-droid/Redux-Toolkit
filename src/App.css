@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+.log-btn{
+  margin-left: 10px;
+  border: none;
+  outline: none;
+  background: #764abc;
+  padding: 5px 10px;
+  color: #fff;
+  margin-top: 2px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.log-btn:hover{
+  background: #513282;
+}
+.modal-close{
+  background-color: rgb(184, 34, 34);
+  padding: 8px;
+ margin: 2px;
+  border-radius: 2pc;
+}
+.modal-close:hover{
+  background-color: red;
+}

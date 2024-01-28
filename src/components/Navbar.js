@@ -23,7 +23,7 @@ export default function Navbar() {
         <Link className='navLink' to ="/cart"> Cart </Link>
         <span className='cartCount'>Cart Items:{item.length}</span>
         {isAuthenticated && <span className='navLink'>Hi ,{user.name}</span>}
-       { isAuthenticated  ?  <button  className='navLink' onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+       { isAuthenticated  ?  <button  className='log-btn' onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
       Log Out
     </button> : null
           }

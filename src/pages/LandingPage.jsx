@@ -7,8 +7,8 @@ const LandingPage = () => {
     const { user, isAuthenticated, isLoading } = useAuth0();
   return (
     <div>
-      this is landing page
-     { isAuthenticated? null: <button onClick={() => loginWithRedirect()}>Log In</button>}
+      This is landing page
+     { isAuthenticated? null: <button className='log-btn' onClick={() => loginWithRedirect()}>Log In</button>}
     </div>
   )
 }
